@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011-2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public class SendTestBroadcastActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.test_buttons);
-                
+
         /* Send an ETWS normal broadcast message to app. */
         Button etwsNormalTypeButton = (Button) findViewById(R.id.button_etws_normal_type);
         etwsNormalTypeButton.setOnClickListener(new OnClickListener() {
@@ -284,6 +284,123 @@ public class SendTestBroadcastActivity extends Activity {
         delayCheckbox.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 mDelayBeforeSending = delayCheckbox.isChecked();
+            }
+        });
+
+        /* Send a GSM 7-bit ch 50 broadcast message to app. */
+        findViewById(R.id.button_gsm_7bit_ch50_type)
+        .setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (mDelayBeforeSending && v != null) {
+                    mPendingButtonClick = this;
+                    mDelayHandler.sendEmptyMessageDelayed(0, DELAY_BEFORE_SENDING_MSEC);
+                } else {
+                    SendTestMessages.testSendMessage7bit50(SendTestBroadcastActivity.this);
+                }
+            }
+        });
+
+        /* Send a GSM 7-bit amber broadcast message to app. */
+        findViewById(R.id.button_gsm_7bit_amber_type)
+        .setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (mDelayBeforeSending && v != null) {
+                    mPendingButtonClick = this;
+                    mDelayHandler.sendEmptyMessageDelayed(0, DELAY_BEFORE_SENDING_MSEC);
+                } else {
+                    SendTestMessages.testSendMessage7bitAmber(SendTestBroadcastActivity.this);
+                }
+            }
+        });
+
+        /* Send a GSM 7-bit monthly test broadcast message to app. */
+        findViewById(R.id.button_gsm_7bit_monthly_test_type)
+        .setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (mDelayBeforeSending && v != null) {
+                    mPendingButtonClick = this;
+                    mDelayHandler.sendEmptyMessageDelayed(0, DELAY_BEFORE_SENDING_MSEC);
+                } else {
+                    SendTestMessages.testSendMessage7bitTestBroadcast(SendTestBroadcastActivity.this);
+                }
+            }
+        });
+
+        /* Send a GSM 7-bit imminent threat broadcast message to app. */
+        findViewById(R.id.button_gsm_7bit_imminent_threat_type)
+        .setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (mDelayBeforeSending && v != null) {
+                    mPendingButtonClick = this;
+                    mDelayHandler.sendEmptyMessageDelayed(0, DELAY_BEFORE_SENDING_MSEC);
+                } else {
+                    SendTestMessages.testSendMessage7bitImminentThreat(SendTestBroadcastActivity.this);
+                }
+            }
+        });
+
+        /* Send a CDMA CMAS Presidential broadcast message to app. */
+        findViewById(R.id.button_cdma_presidential_type)
+        .setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (mDelayBeforeSending && v != null) {
+                    mPendingButtonClick = this;
+                    mDelayHandler.sendEmptyMessageDelayed(0, DELAY_BEFORE_SENDING_MSEC);
+                } else {
+                    SendTestMessages.testSendCdmaPresidentialMessage(SendTestBroadcastActivity.this);
+                }
+            }
+        });
+
+        /* Send a CDMA CMAS Extreme broadcast message to app. */
+        findViewById(R.id.button_cdma_extreme_type)
+        .setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (mDelayBeforeSending && v != null) {
+                    mPendingButtonClick = this;
+                    mDelayHandler.sendEmptyMessageDelayed(0, DELAY_BEFORE_SENDING_MSEC);
+                } else {
+                    SendTestMessages.testSendCdmaExtremeMessage(SendTestBroadcastActivity.this);
+                }
+            }
+        });
+
+        /* Send a CDMA CMAS Severe broadcast message to app. */
+        findViewById(R.id.button_cdma_severe_type)
+        .setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (mDelayBeforeSending && v != null) {
+                    mPendingButtonClick = this;
+                    mDelayHandler.sendEmptyMessageDelayed(0, DELAY_BEFORE_SENDING_MSEC);
+                } else {
+                    SendTestMessages.testSendCdmaSevereMessage(SendTestBroadcastActivity.this);
+                }
+            }
+        });
+
+        /* Send a CDMA CMAS Amber broadcast message to app. */
+        findViewById(R.id.button_cdma_amber_type)
+        .setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (mDelayBeforeSending && v != null) {
+                    mPendingButtonClick = this;
+                    mDelayHandler.sendEmptyMessageDelayed(0, DELAY_BEFORE_SENDING_MSEC);
+                } else {
+                    SendTestMessages.testSendCdmaAmberMessage(SendTestBroadcastActivity.this);
+                }
+            }
+        });
+
+        /* Send a CDMA CMAS Test broadcast message to app. */
+        findViewById(R.id.button_cdma_test_type)
+        .setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (mDelayBeforeSending && v != null) {
+                    mPendingButtonClick = this;
+                    mDelayHandler.sendEmptyMessageDelayed(0, DELAY_BEFORE_SENDING_MSEC);
+                } else {
+                    SendTestMessages.testSendCdmaTestMessage(SendTestBroadcastActivity.this);
+                }
             }
         });
     }

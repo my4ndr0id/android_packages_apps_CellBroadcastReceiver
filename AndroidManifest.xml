@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011-2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,10 @@
 
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_CB_RECEIVED" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.provider.Telephony.EMERGENCY_CDMA_MESSAGE_RECEIVED" />
             </intent-filter>
         </receiver>
 

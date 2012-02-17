@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011-2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class CellBroadcastListItem extends RelativeLayout {
     private static final String TAG = "CellBroadcastListItem";
     private static final boolean DEBUG = false;
 
-    private CellBroadcastMessage mCbMessage;
+    private BroadcastMessage mMessage;
 
     private TextView mChannelView;
     private TextView mMessageView;
@@ -52,8 +52,8 @@ public class CellBroadcastListItem extends RelativeLayout {
         super(context, attrs);
     }
 
-    CellBroadcastMessage getMessage() {
-        return mCbMessage;
+    BroadcastMessage getMessage() {
+        return mMessage;
     }
 
     @Override
@@ -69,8 +69,8 @@ public class CellBroadcastListItem extends RelativeLayout {
      * Only used for header binding.
      * @param message the message contents to bind
      */
-    public void bind(CellBroadcastMessage message) {
-        mCbMessage = message;
+    public void bind(BroadcastMessage message) {
+        mMessage = message;
 
         Drawable background = message.isRead() ?
                 getResources().getDrawable(R.drawable.list_item_background_read) :
@@ -83,7 +83,7 @@ public class CellBroadcastListItem extends RelativeLayout {
         mMessageView.setText(formatMessage(message));
     }
 
-    private static CharSequence formatMessage(CellBroadcastMessage message) {
+    private static CharSequence formatMessage(BroadcastMessage message) {
         String body = message.getMessageBody();
 
         SpannableStringBuilder buf = new SpannableStringBuilder(body);
@@ -99,7 +99,7 @@ public class CellBroadcastListItem extends RelativeLayout {
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         // Speak the date first, then channel name, then message body
-        event.getText().add(mCbMessage.getSpokenDateString(getContext()));
+        event.getText().add(mMessage.getSpokenDateString(getContext()));
         mChannelView.dispatchPopulateAccessibilityEvent(event);
         mMessageView.dispatchPopulateAccessibilityEvent(event);
         return true;

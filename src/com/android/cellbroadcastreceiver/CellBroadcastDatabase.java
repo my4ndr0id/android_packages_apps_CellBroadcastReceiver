@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011-2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,31 @@ public class CellBroadcastDatabase {
         public static final String MESSAGE_READ = "read";
 
         /**
+         * Message Format. GSM or CDMA
+         * <P>Type: INTEGER</P>
+         */
+        public static final String MESSAGE_FORMAT = "message_format";
+
+        /**
+         * CMAE_severity. See TIA 1149 4.3
+         * <P>Type: INTEGER</P>
+         */
+        public static final String SEVERITY = "severity";
+
+        /**
+         * CMAE_urgency. See TIA 1149 4.3
+         * <P>Type: INTEGER</P>
+         */
+        public static final String URGENCY = "urgency";
+
+        /**
+         * CMAE_certainty. See TIA 1149 4.3
+         * <P>Type: INTEGER</P>
+         */
+        public static final String CERTAINTY = "certainty";
+
+
+        /**
          * Query for list view adapter.
          */
         static final String[] QUERY_COLUMNS = {
@@ -97,6 +122,10 @@ public class CellBroadcastDatabase {
                 MESSAGE_BODY,
                 DELIVERY_TIME,
                 MESSAGE_READ,
+                MESSAGE_FORMAT,
+                SEVERITY,
+                URGENCY,
+                CERTAINTY
         };
     }
 
@@ -111,6 +140,10 @@ public class CellBroadcastDatabase {
     static final int COLUMN_MESSAGE_BODY        = 6;
     static final int COLUMN_DELIVERY_TIME       = 7;
     static final int COLUMN_MESSAGE_READ        = 8;
+    static final int COLUMN_FORMAT              = 9;
+    static final int COLUMN_SEVERITY            = 10;
+    static final int COLUMN_URGENCY             = 11;
+    static final int COLUMN_CERTAINTY           = 12;
 
     static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -129,7 +162,11 @@ public class CellBroadcastDatabase {
                     + Columns.LANGUAGE_CODE + " TEXT,"
                     + Columns.MESSAGE_BODY + " TEXT,"
                     + Columns.DELIVERY_TIME + " INTEGER,"
-                    + Columns.MESSAGE_READ + " INTEGER);");
+                    + Columns.MESSAGE_READ + " INTEGER,"
+                    + Columns.MESSAGE_FORMAT + " INTEGER,"
+                    + Columns.SEVERITY + " INTEGER,"
+                    + Columns.URGENCY + " INTEGER,"
+                    + Columns.CERTAINTY + " INTEGER);");
         }
 
         @Override

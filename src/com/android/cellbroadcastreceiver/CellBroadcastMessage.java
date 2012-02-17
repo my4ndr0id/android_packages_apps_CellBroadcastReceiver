@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011-2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,6 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemProperties;
 import android.telephony.SmsCbConstants;
 import android.telephony.SmsCbMessage;
 import android.text.format.DateUtils;
@@ -34,48 +35,41 @@ import com.android.internal.telephony.gsm.SmsCbHeader;
  * displayed by {@link CellBroadcastAlertService}, and saved to SQLite by
  * {@link CellBroadcastDatabaseService}.
  */
-public class CellBroadcastMessage implements Parcelable {
+public class CellBroadcastMessage extends BroadcastMessage {
 
     /** Identifier for getExtra() when adding this object to an Intent. */
     public static final String SMS_CB_MESSAGE_EXTRA =
             "com.android.cellbroadcastreceiver.SMS_CB_MESSAGE";
 
+    static final String EMERGENCY_BROADCAST_RANGE =
+            "ro.cb.gsm.emergencyids";
+
     private final int mGeographicalScope;
     private final int mSerialNumber;
     private final int mMessageCode;
-    private final int mMessageIdentifier;
-    private final String mLanguageCode;
-    private final String mMessageBody;
-    private final long mDeliveryTime;
-    private boolean mIsRead;
 
     public CellBroadcastMessage(SmsCbMessage message) {
-        mGeographicalScope = message.getGeographicalScope();
-        mSerialNumber = message.getUpdateNumber();
-        mMessageCode = message.getMessageCode();
-        mMessageIdentifier = message.getMessageIdentifier();
-        mLanguageCode = message.getLanguageCode();
-        mMessageBody = message.getMessageBody();
-        mDeliveryTime = System.currentTimeMillis();
-        mIsRead = false;
+        this(message.getGeographicalScope(),
+                message.getUpdateNumber(),
+                message.getMessageCode(),
+                message.getMessageIdentifier(),
+                message.getLanguageCode(),
+                message.getMessageBody(),
+                System.currentTimeMillis(),
+                false);
     }
 
     private CellBroadcastMessage(int geoScope, int serialNumber,
             int messageCode, int messageId, String languageCode,
             String messageBody, long deliveryTime, boolean isRead) {
+        super(messageId, languageCode, messageBody, deliveryTime, isRead);
         mGeographicalScope = geoScope;
         mSerialNumber = serialNumber;
         mMessageCode = messageCode;
-        mMessageIdentifier = messageId;
-        mLanguageCode = languageCode;
-        mMessageBody = messageBody;
-        mDeliveryTime = deliveryTime;
-        mIsRead = isRead;
     }
 
-    /** Parcelable: no special flags. */
-    public int describeContents() {
-        return 0;
+    public int getFormat() {
+        return android.telephony.TelephonyManager.PHONE_TYPE_GSM;
     }
 
     public void writeToParcel(Parcel out, int flags) {
@@ -126,7 +120,7 @@ public class CellBroadcastMessage implements Parcelable {
      * @return a new ContentValues object containing this object's data
      */
     public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues(8);
+        ContentValues cv = new ContentValues(9);
         cv.put(CellBroadcastDatabase.Columns.GEOGRAPHICAL_SCOPE, mGeographicalScope);
         cv.put(CellBroadcastDatabase.Columns.SERIAL_NUMBER, mSerialNumber);
         cv.put(CellBroadcastDatabase.Columns.MESSAGE_CODE, mMessageCode);
@@ -135,15 +129,8 @@ public class CellBroadcastMessage implements Parcelable {
         cv.put(CellBroadcastDatabase.Columns.MESSAGE_BODY, mMessageBody);
         cv.put(CellBroadcastDatabase.Columns.DELIVERY_TIME, mDeliveryTime);
         cv.put(CellBroadcastDatabase.Columns.MESSAGE_READ, mIsRead);
+        cv.put(CellBroadcastDatabase.Columns.MESSAGE_FORMAT, getFormat());
         return cv;
-    }
-
-    /**
-     * Set or clear the "read message" flag.
-     * @param isRead true if the message has been read; false if not
-     */
-    public void setIsRead(boolean isRead) {
-        mIsRead = isRead;
     }
 
     public int getGeographicalScope() {
@@ -156,26 +143,6 @@ public class CellBroadcastMessage implements Parcelable {
 
     public int getMessageCode() {
         return mMessageCode;
-    }
-
-    public int getMessageIdentifier() {
-        return mMessageIdentifier;
-    }
-
-    public String getLanguageCode() {
-        return mLanguageCode;
-    }
-
-    public long getDeliveryTime() {
-        return mDeliveryTime;
-    }
-
-    public String getMessageBody() {
-        return mMessageBody;
-    }
-
-    public boolean isRead() {
-        return mIsRead;
     }
 
     /**
@@ -285,8 +252,7 @@ public class CellBroadcastMessage implements Parcelable {
 
             default:
                 if (SmsCbHeader.isEmergencyMessage(mMessageIdentifier) ||
-                        CellBroadcastConfigService.isOperatorDefinedEmergencyId(
-                                mMessageIdentifier)) {
+                        isOperatorDefinedEmergencyId()) {
                     return R.string.pws_other_message_identifiers;
                 } else {
                     return R.string.cb_other_message_identifiers;
@@ -294,25 +260,12 @@ public class CellBroadcastMessage implements Parcelable {
         }
     }
 
-    /**
-     * Return the abbreviated date string for the message delivery time.
-     * @param context the context object
-     * @return a String to use in the broadcast list UI
-     */
-    String getDateString(Context context) {
-        int flags = DateUtils.FORMAT_NO_NOON_MIDNIGHT | DateUtils.FORMAT_SHOW_TIME |
-                DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_SHOW_DATE |
-                DateUtils.FORMAT_CAP_AMPM;
-        return DateUtils.formatDateTime(context, mDeliveryTime, flags);
+    public String getIntentExtraName() {
+        return SMS_CB_MESSAGE_EXTRA;
     }
 
-    /**
-     * Return the date string for the message delivery time, suitable for text-to-speech.
-     * @param context the context object
-     * @return a String for populating the list item AccessibilityEvent for TTS
-     */
-    String getSpokenDateString(Context context) {
-        int flags = DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE;
-        return DateUtils.formatDateTime(context, mDeliveryTime, flags);
+    boolean isOperatorDefinedEmergencyId() {
+        return isOperatorDefinedEmergencyId(
+                SystemProperties.get(EMERGENCY_BROADCAST_RANGE));
     }
 }

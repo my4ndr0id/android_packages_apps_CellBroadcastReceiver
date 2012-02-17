@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011-2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.io.UnsupportedEncodingException;
 import android.app.Activity;
 import android.content.Intent;
 import android.provider.Telephony.Sms.Intents;
-import android.test.ActivityInstrumentationTestCase2;
+import android.telephony.SmsCbConstants;
 import android.util.Log;
 
 import com.android.internal.telephony.EncodeException;
@@ -54,7 +54,49 @@ public class SendTestMessages {
             "573065B9306757309707300263FA308C306B5099304830664E0B30553044FF086C178C615E81FF09" +
             "00000000000000000000000000000000000000000000");
 
-    private static final byte[] gsm7BitTest = {
+    private static final byte[] cdmaPresidentialMessage = {
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x01, (byte)0x00, (byte)0x05, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x10, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x74, (byte)0x08, (byte)0x01, (byte)0xc0, (byte)0x00,
+        (byte)0x03, (byte)0x10, (byte)0x00, (byte)0xf0, (byte)0x01, (byte)0x5d, (byte)0x02, (byte)0xd8,
+        (byte)0x00, (byte)0x08, (byte)0x20, (byte)0x10, (byte)0x28, (byte)0x80, (byte)0x00, (byte)0x10,
+        (byte)0x50, (byte)0x9d, (byte)0xa0, (byte)0x10, (byte)0x12, (byte)0x18, (byte)0xc8, (byte)0x69,
+        (byte)0x98, (byte)0x20, (byte)0x08, (byte)0x02, (byte)0x30, (byte)0xaa, (byte)0x48, (byte)0x8a,
+        (byte)0x82, (byte)0x85, (byte)0x28, (byte)0xb4, (byte)0xe4, (byte)0xc4, (byte)0x8b, (byte)0x3a,
+        (byte)0xa2, (byte)0x09, (byte)0x10, (byte)0x69, (byte)0xa0, (byte)0x93, (byte)0x4e, (byte)0x9d,
+        (byte)0x58, (byte)0xb1, (byte)0x10, (byte)0x41, (byte)0x9c, (byte)0x82, (byte)0x2c, (byte)0xd8,
+        (byte)0xb4, (byte)0xa3, (byte)0xc5, (byte)0x9d, (byte)0x0e, (byte)0xca, (byte)0x08, (byte)0x33,
+        (byte)0x22, (byte)0xd2, (byte)0xa8, (byte)0xb9, (byte)0x04, (byte)0x39, (byte)0x11, (byte)0x61,
+        (byte)0xcb, (byte)0x41, (byte)0x32, (byte)0x7c, (byte)0x38, (byte)0x33, (byte)0x10, (byte)0x4d,
+        (byte)0x8b, (byte)0x12, (byte)0x4c, (byte)0x14, (byte)0x11, (byte)0xa7, (byte)0xd2, (byte)0x41,
+        (byte)0x36, (byte)0x7d, (byte)0x28, (byte)0xa8, (byte)0x22, (byte)0x45, (byte)0xa9, (byte)0x06,
+        (byte)0x4c, (byte)0xca, (byte)0x60, (byte)0x03, (byte)0x06, (byte)0x04, (byte)0x01, (byte)0x1a,
+        (byte)0x10, (byte)0x0e, (byte)0x25, (byte)0x09, (byte)0x01, (byte)0x00, (byte)0x0e, (byte)0x00,
+    };
+
+    private static final byte[] cdmaAmberMessage = {
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x01, (byte)0x00, (byte)0x05, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x10, (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x74, (byte)0x08, (byte)0x01, (byte)0xc0, (byte)0x00,
+        (byte)0x03, (byte)0x10, (byte)0x00, (byte)0xf0, (byte)0x01, (byte)0x5d, (byte)0x02, (byte)0xd8,
+        (byte)0x00, (byte)0x08, (byte)0x20, (byte)0x10, (byte)0x28, (byte)0x80, (byte)0x00, (byte)0x10,
+        (byte)0x50, (byte)0x9d, (byte)0xa0, (byte)0x10, (byte)0x12, (byte)0x18, (byte)0xc8, (byte)0x69,
+        (byte)0x98, (byte)0x20, (byte)0x08, (byte)0x02, (byte)0x30, (byte)0xaa, (byte)0x48, (byte)0x8a,
+        (byte)0x82, (byte)0x85, (byte)0x28, (byte)0xb4, (byte)0xe4, (byte)0xc4, (byte)0x8b, (byte)0x3a,
+        (byte)0xa2, (byte)0x09, (byte)0x10, (byte)0x69, (byte)0xa0, (byte)0x93, (byte)0x4e, (byte)0x9d,
+        (byte)0x58, (byte)0xb1, (byte)0x10, (byte)0x41, (byte)0x9c, (byte)0x82, (byte)0x2c, (byte)0xd8,
+        (byte)0xb4, (byte)0xa3, (byte)0xc5, (byte)0x9d, (byte)0x0e, (byte)0xca, (byte)0x08, (byte)0x33,
+        (byte)0x22, (byte)0xd2, (byte)0xa8, (byte)0xb9, (byte)0x04, (byte)0x39, (byte)0x11, (byte)0x61,
+        (byte)0xcb, (byte)0x41, (byte)0x32, (byte)0x7c, (byte)0x38, (byte)0x33, (byte)0x10, (byte)0x4d,
+        (byte)0x8b, (byte)0x12, (byte)0x4c, (byte)0x14, (byte)0x11, (byte)0xa7, (byte)0xd2, (byte)0x41,
+        (byte)0x36, (byte)0x7d, (byte)0x28, (byte)0xa8, (byte)0x22, (byte)0x45, (byte)0xa9, (byte)0x06,
+        (byte)0x4c, (byte)0xca, (byte)0x60, (byte)0x03, (byte)0x06, (byte)0x04, (byte)0x01, (byte)0x1a,
+        (byte)0x10, (byte)0x0e, (byte)0x25, (byte)0x09, (byte)0x01, (byte)0x00, (byte)0x0e, (byte)0x00,
+    };
+
+    private static final byte[] gsm7BitTest = { // id=[2][3]=0x0032=50
             (byte)0xC0, (byte)0x00, (byte)0x00, (byte)0x32, (byte)0x40, (byte)0x11, (byte)0x41,
             (byte)0xD0, (byte)0x71, (byte)0xDA, (byte)0x04, (byte)0x91, (byte)0xCB, (byte)0xE6,
             (byte)0x70, (byte)0x9D, (byte)0x4D, (byte)0x07, (byte)0x85, (byte)0xD9, (byte)0x70,
@@ -70,7 +112,7 @@ public class SendTestMessages {
             (byte)0x46, (byte)0xA3, (byte)0xD1, (byte)0x00
     };
 
-    private static final byte[] gsm7BitTestUmts = {
+    private static final byte[] gsm7BitTestUmts = { // id=[1][2]=0x0032=50
             (byte)0x01, (byte)0x00, (byte)0x32, (byte)0xC0, (byte)0x00, (byte)0x40,
 
             (byte)0x01,
@@ -93,7 +135,7 @@ public class SendTestMessages {
             (byte)0x34
     };
 
-    private static final byte[] gsm7BitTestMultipageUmts = {
+    private static final byte[] gsm7BitTestMultipageUmts = { // id=[1][2]=0x0001=1
             (byte)0x01, (byte)0x00, (byte)0x01, (byte)0xC0, (byte)0x00, (byte)0x40,
 
             (byte)0x02,
@@ -381,6 +423,7 @@ public class SendTestMessages {
             (byte)0x50
     };
 
+    // GSM format
     static byte[] encodeCellBroadcast(int serialNumber, int messageId, int dcs, String message) {
         byte[] pdu = new byte[88];
         pdu[0] = (byte) ((serialNumber >> 8) & 0xff);
@@ -487,7 +530,7 @@ public class SendTestMessages {
         Intent intent = new Intent(Intents.SMS_CB_RECEIVED_ACTION);
         byte[][] pdus = new byte[1][];
         pdus[0] = gsmUcs2Test;
-//        pdus[0] = encodeCellBroadcast(0, 0, DCS_16BIT_UCS2, "Hello in UCS2");
+        pdus[0] = encodeCellBroadcast(0, 0, DCS_16BIT_UCS2, "Hello in UCS2");
         intent.putExtra("pdus", pdus);
         activity.sendOrderedBroadcast(intent, "android.permission.RECEIVE_SMS");
     }
@@ -549,5 +592,115 @@ public class SendTestMessages {
         intent.putExtra("pdus", pdus);
         activity.sendOrderedBroadcast(intent,
                 "android.permission.RECEIVE_EMERGENCY_BROADCAST");
+    }
+
+    public static void testSendMessage7bit50(Activity activity) {
+        Intent intent = new Intent(Intents.SMS_CB_RECEIVED_ACTION);
+        byte[][] pdus = new byte[1][];
+        int serialNumber = 1;
+        int messageId = 50;
+        pdus[0] = encodeCellBroadcast(serialNumber, messageId, DCS_7BIT_ENGLISH,
+                "50: Hello in GSM 7 bit");
+        intent.putExtra("pdus", pdus);
+        activity.sendOrderedBroadcast(intent, "android.permission.RECEIVE_SMS");
+        print(pdus[0]);
+    }
+
+    public static void testSendMessage7bitAmber(Activity activity) {
+        Intent intent = new Intent(Intents.SMS_EMERGENCY_CB_RECEIVED_ACTION);
+        byte[][] pdus = new byte[1][];
+        int serialNumber = 1;
+        int messageId = SmsCbConstants.MESSAGE_ID_CMAS_ALERT_CHILD_ABDUCTION_EMERGENCY;
+        pdus[0] = encodeCellBroadcast(serialNumber, messageId, DCS_7BIT_ENGLISH,
+                "AMBER ALERT: Jane Doe was last seen...");
+        intent.putExtra("pdus", pdus);
+        activity.sendOrderedBroadcast(intent, "android.permission.RECEIVE_EMERGENCY_BROADCAST");
+    }
+
+    public static void testSendMessage7bitTestBroadcast(Activity activity) {
+        Intent intent = new Intent(Intents.SMS_EMERGENCY_CB_RECEIVED_ACTION);
+        byte[][] pdus = new byte[1][];
+        int serialNumber = 1;
+        int messageId = SmsCbConstants.MESSAGE_ID_CMAS_ALERT_REQUIRED_MONTHLY_TEST;
+        pdus[0] = encodeCellBroadcast(serialNumber, messageId, DCS_7BIT_ENGLISH,
+                "Test: This is cmas required monthly alert test...");
+        intent.putExtra("pdus", pdus);
+        activity.sendOrderedBroadcast(intent, "android.permission.RECEIVE_EMERGENCY_BROADCAST");
+    }
+
+    public static void testSendMessage7bitImminentThreat(Activity activity) {
+        Intent intent = new Intent(Intents.SMS_EMERGENCY_CB_RECEIVED_ACTION);
+        byte[][] pdus = new byte[1][];
+        int serialNumber = 1;
+        int messageId = SmsCbConstants.MESSAGE_ID_CMAS_ALERT_EXTREME_IMMEDIATE_OBSERVED;
+        pdus[0] = encodeCellBroadcast(serialNumber, messageId, DCS_7BIT_ENGLISH,
+                "IMMINENT THREAT...");
+        intent.putExtra("pdus", pdus);
+        activity.sendOrderedBroadcast(intent, "android.permission.RECEIVE_EMERGENCY_BROADCAST");
+    }
+
+    public static void testSendCdmaPresidentialMessage(Activity activity) {
+        Intent intent = new Intent(Intents.EMERGENCY_CDMA_MESSAGE_RECEIVED_ACTION);
+        byte[][] pdus = new byte[1][];
+        pdus[0] = cdmaPresidentialMessage;
+        pdus[0][11]=0x0;
+        intent.putExtra("pdus", pdus);
+        activity.sendOrderedBroadcast(intent,
+                "android.permission.RECEIVE_SMS");
+    }
+
+    public static void testSendCdmaExtremeMessage(Activity activity) {
+        Intent intent = new Intent(Intents.EMERGENCY_CDMA_MESSAGE_RECEIVED_ACTION);
+        byte[][] pdus = new byte[1][];
+        pdus[0] = cdmaPresidentialMessage;
+        pdus[0][11]=0x1; //replacing message id
+        intent.putExtra("pdus", pdus);
+        activity.sendOrderedBroadcast(intent,
+                "android.permission.RECEIVE_SMS");
+    }
+
+    public static void testSendCdmaSevereMessage(Activity activity) {
+        Intent intent = new Intent(Intents.EMERGENCY_CDMA_MESSAGE_RECEIVED_ACTION);
+        byte[][] pdus = new byte[1][];
+        pdus[0] = cdmaPresidentialMessage;
+        pdus[0][11]=0x2; //replacing message id
+        intent.putExtra("pdus", pdus);
+        activity.sendOrderedBroadcast(intent,
+                "android.permission.RECEIVE_SMS");
+    }
+
+    public static void testSendCdmaAmberMessage(Activity activity) {
+        Intent intent = new Intent(Intents.EMERGENCY_CDMA_MESSAGE_RECEIVED_ACTION);
+        byte[][] pdus = new byte[1][];
+        pdus[0] = cdmaAmberMessage;
+        intent.putExtra("pdus", pdus);
+        activity.sendOrderedBroadcast(intent,
+                "android.permission.RECEIVE_SMS");
+    }
+
+    public static void testSendCdmaTestMessage(Activity activity) {
+        Intent intent = new Intent(Intents.EMERGENCY_CDMA_MESSAGE_RECEIVED_ACTION);
+        byte[][] pdus = new byte[1][];
+        pdus[0] = cdmaPresidentialMessage;
+        pdus[0][11]=0x4; //replacing message id
+        intent.putExtra("pdus", pdus);
+        activity.sendOrderedBroadcast(intent,
+                "android.permission.RECEIVE_SMS");
+    }
+
+    static private void print(byte[] pdu) {
+        if (true) {
+            for (int i = 0; i < pdu.length; i += 8) {
+                StringBuilder sb = new StringBuilder("pdu: ");
+                for (int j = i; j < i + 8 && j < pdu.length; j++) {
+                    int b = pdu[j] & 0xff;
+                    if (b < 0x10) {
+                        sb.append('0');
+                    }
+                    sb.append(Integer.toHexString(b)).append(' ');
+                }
+                Log.d(TAG, sb.toString());
+            }
+        }
     }
 }

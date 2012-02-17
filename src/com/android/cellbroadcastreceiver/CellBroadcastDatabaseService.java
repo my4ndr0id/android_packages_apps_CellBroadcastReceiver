@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011-2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,14 +89,18 @@ public class CellBroadcastDatabaseService extends IntentService {
         String action = intent.getAction();
         boolean notifyActiveListActivity = false;
         if (ACTION_INSERT_NEW_BROADCAST.equals(action)) {
-            CellBroadcastMessage cbm = intent.getParcelableExtra(
+            BroadcastMessage bm = intent.getParcelableExtra(
                     CellBroadcastMessage.SMS_CB_MESSAGE_EXTRA);
-            if (cbm == null) {
-                Log.e(TAG, "ACTION_INSERT_NEW_BROADCAST with no CB message extra");
+            if (bm == null) {
+                bm = intent.getParcelableExtra(
+                        CdmaBroadcastMessage.SMS_CDMA_MESSAGE_EXTRA);
+            }
+            if (bm == null) {
+                Log.e(TAG, "ACTION_INSERT_NEW_BROADCAST with no message extra");
                 return;
             }
 
-            ContentValues cv = cbm.getContentValues();
+            ContentValues cv = bm.getContentValues();
             long rowId = mBroadcastDb.insert(CellBroadcastDatabase.TABLE_NAME, null, cv);
             if (rowId == -1) {
                 Log.e(TAG, "failed to insert new broadcast into database!");

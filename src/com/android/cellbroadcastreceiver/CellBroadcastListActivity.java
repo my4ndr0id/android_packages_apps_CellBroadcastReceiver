@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011-2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -182,13 +183,13 @@ public class CellBroadcastListActivity extends ListActivity {
     }
 
     private void showDialogAndMarkRead(Cursor cursor) {
-        CellBroadcastMessage cbm = CellBroadcastMessage.createFromCursor(cursor);
-        boolean isAlertMessage = cbm.isPublicAlertMessage() || CellBroadcastConfigService
-                .isOperatorDefinedEmergencyId(cbm.getMessageIdentifier());
+        BroadcastMessage bm = BroadcastMessage.createFromCursor(cursor);
+        boolean isAlertMessage = bm.isPublicAlertMessage() ||
+                bm.isOperatorDefinedEmergencyId();
         // show emergency alerts with the warning icon, but don't play alert tone
         CellBroadcastAlertDialog dialog = new CellBroadcastAlertDialog(this,
-                cbm.getDialogTitleResource(), cbm.getMessageBody(),
-                isAlertMessage, cbm.getDeliveryTime());
+                bm.getDialogTitleResource(), bm.getMessageBody(),
+                isAlertMessage, bm.getDeliveryTime());
         dialog.show();
     }
 
@@ -262,7 +263,6 @@ public class CellBroadcastListActivity extends ListActivity {
             return;
         }
 
-        CellBroadcastMessage cbm = extras.getParcelable(CellBroadcastMessage.SMS_CB_MESSAGE_EXTRA);
         int notificationId = extras.getInt(CellBroadcastAlertService.SMS_CB_NOTIFICATION_ID_EXTRA);
 
         // Dismiss the notification that brought us here.
@@ -270,12 +270,21 @@ public class CellBroadcastListActivity extends ListActivity {
             (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(notificationId);
 
-        boolean isEmergencyAlert = cbm.isPublicAlertMessage() || CellBroadcastConfigService
-                .isOperatorDefinedEmergencyId(cbm.getMessageIdentifier());
+        BroadcastMessage bm = extras.getParcelable(CellBroadcastMessage.SMS_CB_MESSAGE_EXTRA);
+        if (bm == null) {
+            bm = extras.getParcelable(CdmaBroadcastMessage.SMS_CDMA_MESSAGE_EXTRA);
+        }
+        if (bm != null) {
+            boolean isEmergencyAlert = bm.isPublicAlertMessage()
+                    || bm.isOperatorDefinedEmergencyId();
 
-        CellBroadcastAlertDialog dialog = new CellBroadcastAlertDialog(this,
-                cbm.getDialogTitleResource(), cbm.getMessageBody(),
-                isEmergencyAlert, cbm.getDeliveryTime());
-        dialog.show();
+            CellBroadcastAlertDialog dialog = new CellBroadcastAlertDialog(this,
+                    bm.getDialogTitleResource(), bm.getMessageBody(), isEmergencyAlert,
+                    bm.getDeliveryTime());
+            dialog.show();
+        } else {
+            // should never come here.
+            Log.e(TAG, "parseIntent did not have parcelable for gsm or cdma broadcast");
+        }
     }
 }

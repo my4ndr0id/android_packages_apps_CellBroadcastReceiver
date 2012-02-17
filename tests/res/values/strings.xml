@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!-- Copyright (C) 2011-2012 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,10 +16,19 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_label">Cell Broadcast Tests</string>
+    <string name="button_cdma_presidential_type">Send Cdma CMAS Presidential Broadcast</string>
+    <string name="button_cdma_extreme_type">Send Cdma CMAS Extreme Broadcast</string>
+    <string name="button_cdma_severe_type">Send Cdma CMAS Severe Broadcast</string>
+    <string name="button_cdma_amber_type">Send Cdma CMAS Amber Broadcast</string>
+    <string name="button_cdma_test_type">Send Cdma CMAS Test Broadcast</string>
     <string name="button_etws_normal_type">Send ETWS Normal Broadcast</string>
     <string name="button_etws_cancel_type">Send ETWS Cancel Broadcast</string>
     <string name="button_etws_test_type">Send ETWS Test Broadcast</string>
     <string name="button_gsm_7bit_type">Send GSM 7 Bit Test Broadcast</string>
+    <string name="button_gsm_7bit_ch50_type">Send GSM 7 Bit CH50 Broadcast</string>
+    <string name="button_gsm_7bit_amber_type">Send GSM 7 Bit Amber Broadcast</string>
+    <string name="button_gsm_7bit_monthly_test_type">Send GSM 7 Bit Monthly Test Broadcast</string>
+    <string name="button_gsm_7bit_imminent_threat_type">Send GSM 7 Bit Imminent Threat Broadcast</string>
     <string name="button_gsm_7bit_umts_type">Send UMTS 7 Bit Test Broadcast</string>
     <string name="button_gsm_7bit_nopadding_type">Send GSM 7 Bit Full Length Broadcast</string>
     <string name="button_gsm_7bit_nopadding_umts_type">Send UMTS 7 Bit Full Length Broadcast</string>

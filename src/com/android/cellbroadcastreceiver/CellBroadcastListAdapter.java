@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011-2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class CellBroadcastListAdapter extends CursorAdapter {
      * @return the newly created view.
      */
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        CellBroadcastMessage message = CellBroadcastMessage.createFromCursor(cursor);
+        BroadcastMessage message = BroadcastMessage.createFromCursor(cursor);
 
         LayoutInflater factory = LayoutInflater.from(context);
         CellBroadcastListItem listItem = (CellBroadcastListItem) factory.inflate(
@@ -60,7 +60,7 @@ public class CellBroadcastListAdapter extends CursorAdapter {
      * moved to the correct position.
      */
     public void bindView(View view, Context context, Cursor cursor) {
-        CellBroadcastMessage message = CellBroadcastMessage.createFromCursor(cursor);
+        BroadcastMessage message = BroadcastMessage.createFromCursor(cursor);
         CellBroadcastListItem listItem = (CellBroadcastListItem) view;
         listItem.bind(message);
     }
