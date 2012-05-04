@@ -60,9 +60,6 @@ public class CdmaBroadcastMessage extends BroadcastMessage {
     // SmsEnvelope has EMERGENCY_MESSAGE_ID_START and END and END doesn't include
     // future extension
     //C.R1001-G 9.3.3 - Cmas message IDs
-    /** Start of PWS Message Identifier range (includes ETWS and CMAS). */
-    public static final int MESSAGE_ID_PWS_FIRST_IDENTIFIER = 0x1000;
-
     /** Start of CMAS Message Identifier range. */
     public static final int CMAS_FIRST_IDENTIFIER = 0x1000;
 
@@ -72,11 +69,8 @@ public class CdmaBroadcastMessage extends BroadcastMessage {
     public static final int CMAS_AMBER        = 0x1003;
     public static final int CMAS_TEST         = 0x1004;
 
-    /** End of CMAS Message Identifier range (including future extensions). */
-    public static final int CMAS_LAST_IDENTIFIER = 0x10FF;
-
-    /** End of PWS Message Identifier range (includes ETWS, CMAS, and future extensions). */
-    public static final int MESSAGE_ID_PWS_LAST_IDENTIFIER                  = 0x10FF;
+    /** End of CMAS Message Identifier range */
+    public static final int CMAS_LAST_IDENTIFIER = 0x1004;
 
     private CdmaBroadcastMessage(SmsMessage msg) {
         this(msg.getMessageBody(),

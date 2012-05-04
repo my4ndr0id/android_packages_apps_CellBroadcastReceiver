@@ -172,14 +172,24 @@ public abstract class BroadcastMessage implements Parcelable {
     /**
      * Return whether the messageId is operator defined emergency ID.
      * @param emergencyIdRange contains operator defined emergency IDs.
-     * Sample format of emergencyIdRange:
-     * "1,3,9-12,15"
-     * "0x1,0x3,0x9-0xc,0xf"
-     * @see java.lang.Integer.decode(String string)
+     * @see #isOperatorDefinedEmergencyId(String, int)
      * @return true this.messageId is operator defined, false otherwise
      */
     boolean isOperatorDefinedEmergencyId(String emergencyIdRange) {
-        int messageId = this.getMessageIdentifier();
+        return isOperatorDefinedEmergencyId(emergencyIdRange, getMessageIdentifier());
+    }
+
+    /**
+     * Return whether the messageId is operator defined emergency ID.
+     * @param emergencyIdRange contains operator defined emergency IDs.
+     * @param messageId id to check against operator defined emergency IDs.
+     * Sample format of emergencyIdRange:
+     * "1,3,9-12,15"
+     * "0x1,0x3,0x9-0xc,0xf"
+     * @see java.lang.Integer.decode(String)
+     * @return true this.messageId is operator defined, false otherwise
+     */
+    static boolean isOperatorDefinedEmergencyId(String emergencyIdRange, int messageId) {
         // Check for system property defining the emergency channel ranges to enable
         if (TextUtils.isEmpty(emergencyIdRange)) {
             return false;
