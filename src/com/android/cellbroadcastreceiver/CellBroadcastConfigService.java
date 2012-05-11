@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2012 The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project
  * Copyright (c) 2012, Code Aurora Forum. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
