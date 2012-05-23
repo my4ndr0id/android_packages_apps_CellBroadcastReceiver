@@ -42,10 +42,6 @@ import android.util.Log;
 public class CellBroadcastAlertService extends Service {
     private static final String TAG = "CellBroadcastAlertService";
 
-    /** Identifier for notification ID extra. */
-    public static final String SMS_CB_NOTIFICATION_ID_EXTRA =
-            "com.android.cellbroadcastreceiver.SMS_CB_NOTIFICATION_ID";
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
@@ -269,7 +265,6 @@ public class CellBroadcastAlertService extends Service {
         // Trigger the list activity to fire up a dialog that shows the received messages
         Intent intent = new Intent(context, CellBroadcastListActivity.class);
         intent.putExtra(message.getIntentExtraName(), message);
-        intent.putExtra(SMS_CB_NOTIFICATION_ID_EXTRA, notificationId);
 
         // This line is needed to make this intent compare differently than the other intents
         // created here for other messages. Without this line, the PendingIntent always gets the
