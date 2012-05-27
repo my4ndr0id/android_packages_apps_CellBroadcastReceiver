@@ -258,18 +258,15 @@ public class CellBroadcastListActivity extends ListActivity {
         if (intent == null) {
             return;
         }
+        // Dismiss the notification
+        NotificationManager notificationManager =
+            (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+
         Bundle extras = intent.getExtras();
         if (extras == null) {
             return;
         }
-
-        int notificationId = extras.getInt(CellBroadcastAlertService.SMS_CB_NOTIFICATION_ID_EXTRA);
-
-        // Dismiss the notification that brought us here.
-        NotificationManager notificationManager =
-            (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(notificationId);
-
         BroadcastMessage bm = extras.getParcelable(CellBroadcastMessage.SMS_CB_MESSAGE_EXTRA);
         if (bm == null) {
             bm = extras.getParcelable(CdmaBroadcastMessage.SMS_CDMA_MESSAGE_EXTRA);

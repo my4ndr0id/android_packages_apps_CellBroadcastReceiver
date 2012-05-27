@@ -54,6 +54,8 @@ public class CellBroadcastConfigService extends IntentService {
     }
 
     private void setChannelRange(SmsManager manager, String ranges, boolean enable, boolean isCdma) {
+        if (DBG) Log.d(TAG, "setChannelRange: " + ranges);
+
         try {
             for (String channelRange : ranges.split(",")) {
                 int dashIndex = channelRange.indexOf('-');
@@ -97,6 +99,14 @@ public class CellBroadcastConfigService extends IntentService {
         } catch (NumberFormatException e) {
             Log.e(TAG, "Number Format Exception parsing emergency channel range", e);
         }
+
+        // Make sure CMAS Presidential is enabled (See 3GPP TS 22.268 Section 6.2).
+        if (DBG) Log.d(TAG, "setChannelRange: enabling CMAS Presidential");
+        if (isCdma) {
+            manager.enableCdmaBroadcast(CdmaBroadcastMessage.CMAS_PRESIDENTIAL);
+        } else {
+            manager.enableCellBroadcast(SmsCbConstants.MESSAGE_ID_CMAS_ALERT_PRESIDENTIAL_LEVEL);
+        }
     }
 
     @Override
@@ -133,6 +143,10 @@ public class CellBroadcastConfigService extends IntentService {
                     manager.enableCellBroadcastRange(
                             SmsCbConstants.MESSAGE_ID_PWS_FIRST_IDENTIFIER,
                             SmsCbConstants.MESSAGE_ID_PWS_LAST_IDENTIFIER);
+
+                    // CMAS Presidential must be on (See 3GPP TS 22.268 Section 6.2).
+                    manager.enableCellBroadcast(
+                            SmsCbConstants.MESSAGE_ID_CMAS_ALERT_PRESIDENTIAL_LEVEL);
                 }
                 if (DBG) Log.d(TAG, "enabled emergency cell broadcast channels");
             } else {
@@ -142,9 +156,14 @@ public class CellBroadcastConfigService extends IntentService {
                     setChannelRange(manager, emergencyIdRange, false, false);
                 } else {
                     // No emergency channel system property, disable all emergency channels
+                    // except for CMAS Presidential (See 3GPP TS 22.268 Section 6.2)
                     manager.disableCellBroadcastRange(
                             SmsCbConstants.MESSAGE_ID_PWS_FIRST_IDENTIFIER,
                             SmsCbConstants.MESSAGE_ID_PWS_LAST_IDENTIFIER);
+
+                    manager.enableCellBroadcast(
+                            SmsCbConstants.MESSAGE_ID_CMAS_ALERT_PRESIDENTIAL_LEVEL);
+
                 }
                 if (DBG) Log.d(TAG, "disabled emergency cell broadcast channels");
             }
@@ -183,8 +202,11 @@ public class CellBroadcastConfigService extends IntentService {
                 } else {
                     // No emergency channel system property, enable all emergency channels
                     manager.enableCdmaBroadcastRange(
-                            CdmaBroadcastMessage.MESSAGE_ID_PWS_FIRST_IDENTIFIER,
-                            CdmaBroadcastMessage.MESSAGE_ID_PWS_LAST_IDENTIFIER);
+                            CdmaBroadcastMessage.CMAS_FIRST_IDENTIFIER,
+                            CdmaBroadcastMessage.CMAS_LAST_IDENTIFIER);
+
+                    // CMAS Presidential must be on.
+                    manager.enableCdmaBroadcast(CdmaBroadcastMessage.CMAS_PRESIDENTIAL);
                 }
                 if (DBG) Log.d(TAG, "enabled emergency cdma broadcast channels");
             } else {
@@ -196,8 +218,11 @@ public class CellBroadcastConfigService extends IntentService {
                 } else {
                     // No emergency channel system property, disable all emergency channels
                     manager.disableCdmaBroadcastRange(
-                            CdmaBroadcastMessage.MESSAGE_ID_PWS_FIRST_IDENTIFIER,
-                            CdmaBroadcastMessage.MESSAGE_ID_PWS_LAST_IDENTIFIER);
+                            CdmaBroadcastMessage.CMAS_FIRST_IDENTIFIER,
+                            CdmaBroadcastMessage.CMAS_LAST_IDENTIFIER);
+
+                    // CMAS Presidential must be on.
+                    manager.enableCdmaBroadcast(CdmaBroadcastMessage.CMAS_PRESIDENTIAL);
                 }
                 if (DBG) Log.d(TAG, "disabled emergency cdma broadcast channels");
             }
